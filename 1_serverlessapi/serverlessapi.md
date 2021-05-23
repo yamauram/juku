@@ -131,7 +131,7 @@
       export PGPASSWORD=<パスワード>
 
       # PostgreSQLへ接続
-      psql -h yamauram-postgre.cgkye2qecvdy.ap-northeast-1.rds.amazonaws.com -p 5432 -U postgres -d postgres
+      psql -h <RDSのエンドポイント> -p 5432 -U postgres -d postgres
 
       # テーブル作成
       # キーとなるRECEPTION_NUMBERはSERIAL型とし、MyBatisのgeneratedKeyでキー生成する仕組み
@@ -249,7 +249,7 @@
   - ここまでは API Gateway のテストから検証を行ったが、curl でのアクセスを行うために API のデプロイを行う。  
     デプロイのステージは`「prod」`とする。発行された API の URL は以下の通り。
     ```bash
-    https://vetug3ilcl.execute-api.ap-northeast-1.amazonaws.com/prod
+    https://<APIのエンドポイント>/prod
     ```
   - 以下のコマンドで API にリクエストを送る。
 
@@ -263,7 +263,7 @@
       - ループ回数：100
     - 単発の場合
       ```bash
-      curl -X POST  https://vetug3ilcl.execute-api.ap-northeast-1.amazonaws.com/prod/sample -H "Content-Type: application/json" -d '{"requestFilePath":"s3://yamauram-bucket/test_data.xml"}'
+      curl -X POST  https://<APIのエンドポイント>/prod/sample -H "Content-Type: application/json" -d '{"requestFilePath":"s3://<バケット名>/test_data.xml"}'
       ```
 
   - 結果：エラーが発生することなくさばけてしまった。。。
@@ -276,7 +276,7 @@
     ```yaml
     spring:
       datasource:
-        url: jdbc:postgresql://yamauram-postgre-proxy.proxy-cgkye2qecvdy.ap-northeast-1.rds.amazonaws.com:5432/postgres
+        url: jdbc:postgresql://<RDS Proxyのエンドポイント>:5432/postgres
     ```
   - proxy 経由で接続を確認。  
     ただし、JMeter で大量リクエストを投げると詰まってしまった。要検証。
