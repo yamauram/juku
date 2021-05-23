@@ -1,6 +1,6 @@
 # サーバレス API の構築
 
-### 背景・目的
+## 背景・目的
 
 - 以下の連載記事を参考に API Gateway ＋ Lambda のオンライン AP の構築を検証する。
   - `API GatewayとLambdaを使ったサーバレスSpringアプリケーション`  
@@ -15,7 +15,7 @@
     1. 後続のディレード処理の完了後、結果ファイルを S3 のパスに出力する。
     1. 要求元システムからの結果取得の要求（受付番号がキー）に対し、S3 のオブジェクトパスを返却する。
 
-### 検証構成
+## 検証構成
 
 - 別紙の構成とする。
 - 検証の段階として、以下の 5 段階で検証する。
@@ -30,7 +30,7 @@
   1. APIGateway + Lambda + SQS + RDS Proxy + Aurora + `S3`  
      ⇒（5 までの処理に追加で）S3 へアクセスしてファイルチェック等の処理を行う
 
-### 検証結果
+## 検証結果
 
 - <u>検証 1：APIGateway + Lambda でとりあえず何かを返してみる</u>
 
@@ -342,4 +342,9 @@
          ※1 リクエスト分は誤差と思われる。
        - ログを確認したところ、Provisioned Concurrency によって事前のデプロイは行われているものの、リクエスト発生後に SpringBoot 起動時の処理で 10 ～ 20 秒程度の時間がかかっており、Provisioned Concurrency の効果があまりなかった。
        - Provisioned Concurrency ではなく CloudWatchEvents 等で事前に暖機運転しておくか、Spring Cloud Function ではなく通常の SpringMVC による RestAPI とするか検討（この場合もはや Fargate でよいのでは…）。
-       - そもそも Spring を無理して使うのではなく、JavaScript やネイティブ Java、軽量なフレームワーク（Micronaut など）、GraalVM（現在 Spring ではベータ版）の利用なども検討してみる。
+
+## まとめ
+
+- API Gateway + Lambda でサーバレス API 自体の疎通は確認できた。
+- コールドスタート問題により、初回リクエスト時のレスポンスに多大な時間がかかっており、商用利用するにはより軽量で単純な API にするか、GraalVM 等による高速化の検証・適用が必要。
+- そもそも Spring を無理して使うのではなく、JavaScript やネイティブ Java、軽量なフレームワーク（Micronaut など）の利用なども検討してみる。
